@@ -4,7 +4,12 @@ from library.stores.s3 import S3DataStore, S3Credentials
 
 
 class DocumentStore:
-    def __init__(self, name: str, credentials: CredentialsBase):
+    def __init__(self, name: str='', credentials: CredentialsBase=None, data_store: DataStoreBase=None):
+
+        if data_store:
+            self.store = data_store
+            return
+
         if name == 's3':
             if not isinstance(credentials, S3Credentials):
                 raise TypeError('s3 data source for document store expects credentials of class S3Credentials')
@@ -22,11 +27,6 @@ class DocumentStore:
             pass
         else:
             raise BaseException('invalid data source provided')
-
-    # for custom data store
-    def create(self, data_store: DataStoreBase):
-        self.store = data_store
-        return self.store
 
     @property
     def store(self):
